@@ -714,7 +714,7 @@ public abstract class AbstractInteropTest {
     responseObserver.awaitCompletion();
     assertEquals(Arrays.<StreamingInputCallResponse>asList(), responseObserver.getValues());
     assertEquals(Status.Code.CANCELLED,
-                 Status.fromThrowable(responseObserver.getError()).getCode());
+        Status.fromThrowable(responseObserver.getError()).getCode());
 
     if (metricsExpected()) {
       // CensusStreamTracerModule record final status in the interceptor, thus is guaranteed to be
@@ -751,7 +751,7 @@ public abstract class AbstractInteropTest {
     responseObserver.awaitCompletion(operationTimeoutMillis(), TimeUnit.MILLISECONDS);
     assertEquals(1, responseObserver.getValues().size());
     assertEquals(Status.Code.CANCELLED,
-        Status.fromThrowable(responseObserver.getError()).getCode());
+                 Status.fromThrowable(responseObserver.getError()).getCode());
 
     assertStatsTrace("grpc.testing.TestService/FullDuplexCall", Status.Code.CANCELLED);
   }
@@ -851,7 +851,7 @@ public abstract class AbstractInteropTest {
 
     final ArrayBlockingQueue<Object> queue = new ArrayBlockingQueue<Object>(10);
     ClientCall<StreamingOutputCallRequest, StreamingOutputCallResponse> call =
-        channel.newCall(TestServiceGrpc.METHOD_STREAMING_OUTPUT_CALL, CallOptions.DEFAULT);
+        channel.newCall(TestServiceGrpc.getStreamingOutputCallMethod(), CallOptions.DEFAULT);
     call.start(new ClientCall.Listener<StreamingOutputCallResponse>() {
       @Override
       public void onHeaders(Metadata headers) {}
