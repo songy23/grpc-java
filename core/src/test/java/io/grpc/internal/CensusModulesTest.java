@@ -264,10 +264,10 @@ public class CensusModulesTest {
     assertEquals(2, capturedCallOptions.get().getStreamTracerFactories().size());
     assertTrue(
         capturedCallOptions.get().getStreamTracerFactories().get(0)
-          instanceof CensusTracingModule.ClientCallTracer);
+        instanceof CensusTracingModule.ClientCallTracer);
     assertTrue(
         capturedCallOptions.get().getStreamTracerFactories().get(1)
-          instanceof CensusStatsModule.ClientCallTracer);
+        instanceof CensusStatsModule.ClientCallTracer);
 
     // Make the call
     Metadata headers = new Metadata();

@@ -248,13 +248,13 @@ public abstract class AbstractInteropTest {
         }
       };
   private final ClientInterceptor tracerSetupInterceptor = new ClientInterceptor() {
-    @Override
-    public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(
-        MethodDescriptor<ReqT, RespT> method, CallOptions callOptions, Channel next) {
-      return next.newCall(
-          method, callOptions.withStreamTracerFactory(clientStreamTracerFactory));
-    }
-  };
+        @Override
+        public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(
+            MethodDescriptor<ReqT, RespT> method, CallOptions callOptions, Channel next) {
+          return next.newCall(
+              method, callOptions.withStreamTracerFactory(clientStreamTracerFactory));
+        }
+      };
 
   /**
    * Must be called by the subclass setup method if overridden.

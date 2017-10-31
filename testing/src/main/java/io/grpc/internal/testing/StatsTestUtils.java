@@ -330,7 +330,6 @@ public class StatsTestUtils {
 
   // TODO(bdrutu): Remove this class after OpenCensus releases support for this class.
   public static class MockableSpan extends Span {
-
     /**
      * Creates a MockableSpan with a random trace ID and span ID.
      */
@@ -344,28 +343,22 @@ public class StatsTestUtils {
     }
 
     @Override
-    public void putAttributes(Map<String, AttributeValue> attributes) {
-    }
+    public void putAttributes(Map<String, AttributeValue> attributes) {}
 
     @Override
-    public void addAnnotation(String description, Map<String, AttributeValue> attributes) {
-    }
+    public void addAnnotation(String description, Map<String, AttributeValue> attributes) {}
 
     @Override
-    public void addAnnotation(Annotation annotation) {
-    }
+    public void addAnnotation(Annotation annotation) {}
 
     @Override
-    public void addNetworkEvent(NetworkEvent networkEvent) {
-    }
+    public void addNetworkEvent(NetworkEvent networkEvent) {}
 
     @Override
-    public void addLink(Link link) {
-    }
+    public void addLink(Link link) {}
 
     @Override
-    public void end(EndSpanOptions options) {
-    }
+    public void end(EndSpanOptions options) {}
 
     private MockableSpan(SpanContext context, @Nullable EnumSet<Options> options) {
       super(context, options);
@@ -375,6 +368,7 @@ public class StatsTestUtils {
      * Mockable implementation for the {@link SpanBuilder} class.
      *
      * <p>Not {@code final} to allow easy mocking.
+     *
      */
     public static class Builder extends SpanBuilder {
 
