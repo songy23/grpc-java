@@ -22,6 +22,13 @@ import io.grpc.Status;
 import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 
+import io.opencensus.common.Scope;
+import io.opencensus.exporter.trace.stackdriver.StackdriverTraceConfiguration;
+import io.opencensus.exporter.trace.stackdriver.StackdriverTraceExporter;
+import io.opencensus.trace.Tracer;
+import io.opencensus.trace.Tracing;
+import io.opencensus.trace.config.TraceParams;
+import io.opencensus.trace.samplers.Samplers;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
@@ -30,7 +37,15 @@ public class ManualFlowControlServer {
   private static final Logger logger =
       Logger.getLogger(ManualFlowControlServer.class.getName());
 
+  private static final Tracer tracer = Tracing.getTracer();
+
   public static void main(String[] args) throws InterruptedException, IOException {
+    StackdriverTraceExporter.createAndRegister(
+        StackdriverTraceConfiguration.builder().setProjectId("opencensus-java-stats-demo-app").build());
+
+    Tracing.getTraceConfig().updateActiveTraceParams(
+        TraceParams.DEFAULT.toBuilder().setSampler(Samplers.alwaysSample()).build());
+
     // Service class implementation
     StreamingGreeterGrpc.StreamingGreeterImplBase svc = new StreamingGreeterGrpc.StreamingGreeterImplBase() {
       @Override
@@ -71,17 +86,19 @@ public class ManualFlowControlServer {
           @Override
           public void onNext(HelloRequest request) {
             // Process the request and send a response or an error.
-            try {
+            try (Scope scope =
+                tracer.spanBuilder("io.grpc.examples.manualflowcontrol.ManualFlowControlServer.StreamObserver.onNext")
+                    .startScopedSpan()) {
               // Accept and enqueue the request.
               String name = request.getName();
-              logger.info("--> " + name);
+              // logger.info("--> " + name);
 
               // Simulate server "work"
               Thread.sleep(100);
 
               // Send a response.
               String message = "Hello " + name;
-              logger.info("<-- " + message);
+              // logger.info("<-- " + message);
               HelloReply reply = HelloReply.newBuilder().setMessage(message).build();
               responseObserver.onNext(reply);
 
@@ -123,6 +140,7 @@ public class ManualFlowControlServer {
       }
     };
 
+
     final Server server = ServerBuilder
         .forPort(50051)
         .addService(svc)
@@ -135,6 +153,7 @@ public class ManualFlowControlServer {
       @Override
       public void run() {
         logger.info("Shutting down");
+        Tracing.getExportComponent().shutdown();
         server.shutdown();
       }
     });
